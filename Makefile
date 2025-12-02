@@ -1,7 +1,7 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17
-DEBUGFLAGS = -g -O0
+CXXFLAGS = -Wall -Wextra -std=c++23
+DEBUGFLAGS = -O0
 RELEASEFLAGS = -O2
 
 # SFML libraries

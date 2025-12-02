@@ -5,26 +5,35 @@
 #include <SFML/Network.hpp>
 #include <bits/stdc++.h>
 
-using namespace sf;
-using namespace std;
+std::unordered_set<std::uint64_t> cells;
+
+inline std::uint64_t encode(int x, int y) {
+    return (std::uint64_t(std::uint32_t(x)) << 32) | std::uint32_t(y);
+}
+
+void next() {
+    static const int DX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    static const int DY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+}
 
 int main() {
-    RenderWindow window(VideoMode(1279, 720), "beanmanthree");
+    cells.reserve(65536);
+    sf::RenderWindow window(sf::VideoMode(1279, 720), "beanmanthree");
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
-    CircleShape shape(100.f);
-    uint32_t x = 540;
-    shape.setFillColor(Color::Green);
+    sf::CircleShape shape(100.f);
+    std::uint32_t x = 540;
+    shape.setFillColor(sf::Color::Green);
     while (window.isOpen()) {
-        Event event;
+        sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) window.close();
+            if (event.type == sf::Event::Closed) window.close();
         }
         window.clear();
-	shape.setPosition((float)x, 260.f);
+        shape.setPosition((float)x, 260.f);
         window.draw(shape);
-	x++;
-	x %= 1280;
+        x += 7;
+        x %= 1280;
         window.display();
     }
     return 0;
