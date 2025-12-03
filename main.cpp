@@ -27,12 +27,10 @@ void next() {
         update[cell] += 16;
         for (int i = 0; i < 8; i++) update[shiftCell(cell, DX[i], DY[i])]++;
     }
-    cells.clear();
     for (const auto& [pos, neighbors] : update) {
         if (neighbors & 16) {
-            if (neighbors == 18 || neighbors == 19) cells.insert(pos);
-        }
-        else if (neighbors == 3) cells.insert(pos);
+            if (neighbors != 18 && neighbors != 19) cells.erase(pos);
+        } else if (neighbors == 3) cells.insert(pos);
     }
     return;
 }
