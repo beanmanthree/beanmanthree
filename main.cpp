@@ -7,21 +7,27 @@
 
 std::unordered_set<uint64_t> cells;
 
-inline uint64_t encode(int x, int y) {
+inline uint64_t encode(int32_t x, int32_t y) {
     return (uint64_t(uint32_t(x)) << 32) | uint32_t(y);
+}
+
+inline void decode(uint64_t pos, int32_t& x, int32_t& y) {
+    x = static_cast<int32_t>(pos >> 32);
+    y = static_cast<int32_t>(pos & 0xFFFFFFFF);
+    return;
 }
 
 inline uint64_t shiftCell(uint64_t pos, int x, int y) {
     return encode(static_cast<int32_t>((pos >> 32) + x), static_cast<int32_t>((pos & 0xFFFFFFFF) + y));
 }
 
-inline void addCell(int x, int y) {
+inline void addCell(int32_t x, int32_t y) {
     cells.insert(encode(x, y));
 }
 
 void next() {
-    static const int DX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
-    static const int DY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+    static const int8_t DX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    static const int8_t DY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
     std::unordered_map<uint64_t, uint8_t> update;
     for (const uint64_t& cell : cells) {
         update[cell] += 16;
