@@ -15,6 +15,10 @@ inline uint64_t shiftCell(uint64_t pos, int x, int y) {
     return encode(static_cast<int32_t>((pos >> 32) + x), static_cast<int32_t>((pos & 0xFFFFFFFF) + y));
 }
 
+inline void addCell(int x, int y) {
+    cells.insert(encode(x, y));
+}
+
 void next() {
     static const int DX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
     static const int DY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
