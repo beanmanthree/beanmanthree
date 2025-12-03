@@ -11,14 +11,14 @@ inline uint64_t encode(int32_t x, int32_t y) {
     return (uint64_t(uint32_t(x)) << 32) | uint32_t(y);
 }
 
-inline void decode(uint64_t pos, int32_t& x, int32_t& y) {
-    x = static_cast<int32_t>(pos >> 32);
-    y = static_cast<int32_t>(pos & 0xFFFFFFFF);
+inline void decode(uint64_t cell, int32_t& x, int32_t& y) {
+    x = static_cast<int32_t>(cell >> 32);
+    y = static_cast<int32_t>(cell & 0xFFFFFFFF);
     return;
 }
 
-inline uint64_t shiftCell(uint64_t pos, int x, int y) {
-    return encode(static_cast<int32_t>((pos >> 32) + x), static_cast<int32_t>((pos & 0xFFFFFFFF) + y));
+inline uint64_t shiftCell(uint64_t cell, int x, int y) {
+    return encode(static_cast<int32_t>((cell >> 32) + x), static_cast<int32_t>((cell & 0xFFFFFFFF) + y));
 }
 
 inline void addCell(int32_t x, int32_t y) {
@@ -41,9 +41,18 @@ void next() {
     return;
 }
 
+inline void drawCells(sf::RenderWindow& window) {
+    for (uint64_t cell : cells) {
+        int32_t x, y;
+        decode(cell, x, y);
+        sf::RectangleShape square(sf::Vector2f(1.0f, 1.0f));
+    }
+    return;
+}
+
 int main() {
     cells.reserve(65536);
-    sf::RenderWindow window(sf::VideoMode(1279, 720), "beanmanthree");
+    sf::RenderWindow window(sf::VideoMode(1280, 720), "beanmanthree");
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
     sf::CircleShape shape(100.f);
