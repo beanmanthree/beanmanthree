@@ -5,15 +5,32 @@
 #include <SFML/Network.hpp>
 #include <bits/stdc++.h>
 
-std::unordered_set<std::uint64_t> cells;
+std::unordered_set<uint64_t> cells;
 
-inline std::uint64_t encode(int x, int y) {
-    return (std::uint64_t(std::uint32_t(x)) << 32) | std::uint32_t(y);
+inline uint64_t encode(int x, int y) {
+    return (uint64_t(uint32_t(x)) << 32) | uint32_t(y);
+}
+
+inline uint64_t shiftCell(uint64_t pos, int x, int y) {
+    return encode(static_cast<int32_t>((pos >> 32) + x), static_cast<int32_t>((pos & 0xFFFFFFFF) + y));
 }
 
 void next() {
     static const int DX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
     static const int DY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+    std::unordered_map<uint64_t, uint8_t> update;
+    for (const uint64_t& cell : cells) {
+        update[cell] += 16;
+        for (int i = 0; i < 8; i++) update[shiftCell(cell, DX[i], DY[i])]++;
+    }
+    cells.clear();
+    for (const auto& [pos, neighbors] : update) {
+        if (neighbors & 16) {
+            if (neighbors == 18 || neighbors == 19) cells.insert(pos);
+        }
+        else if (neighbors == 3) cells.insert(pos);
+    }
+    return;
 }
 
 int main() {
@@ -22,7 +39,7 @@ int main() {
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
     sf::CircleShape shape(100.f);
-    std::uint32_t x = 540;
+    uint32_t x = 540;
     shape.setFillColor(sf::Color::Green);
     while (window.isOpen()) {
         sf::Event event;
