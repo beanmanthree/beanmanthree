@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++23
+CXXFLAGS = -Wall -Wextra -Wpedantic -std=c++23
 DEBUGFLAGS = -O0
 RELEASEFLAGS = -O2
 

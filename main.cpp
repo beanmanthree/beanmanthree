@@ -41,33 +41,47 @@ void next() {
     return;
 }
 
-inline void drawCells(sf::RenderWindow& window) {
+inline void drawCells(sf::RenderWindow& window, sf::Color& cellColor, uint32_t cellSize, int32_t xOffset, int32_t yOffset) {
+    sf::Vector2u windowSize = window.getSize();
+    int32_t minX = (xOffset / cellSize) - 1;
+    int32_t maxX = ((xOffset + windowSize.x) / cellSize) + 1;
+    int32_t minY = (yOffset / cellSize) - 1;
+    int32_t maxY = ((yOffset + windowSize.y) / cellSize) + 1;
+    sf::VertexArray quads(sf::Quads);
+    int32_t x, y;
     for (uint64_t cell : cells) {
-        int32_t x, y;
         decode(cell, x, y);
-        sf::RectangleShape square(sf::Vector2f(1.0f, 1.0f));
+        if (x < minX || x > maxX || y < minY || y > maxY) continue;
+        float screenX = static_cast<float>(x * cellSize - xOffset);
+        float screenY = static_cast<float>(y * cellSize - yOffset);
+        quads.append(sf::Vertex(sf::Vector2f(screenX, screenY), cellColor));
+        quads.append(sf::Vertex(sf::Vector2f(screenX + cellSize, screenY), cellColor));
+        quads.append(sf::Vertex(sf::Vector2f(screenX + cellSize, screenY + cellSize), cellColor));
+        quads.append(sf::Vertex(sf::Vector2f(screenX, screenY + cellSize), cellColor));
     }
+    window.draw(quads);
     return;
 }
 
 int main() {
-    cells.reserve(65536);
     sf::RenderWindow window(sf::VideoMode(1280, 720), "beanmanthree");
-    window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
-    sf::CircleShape shape(100.f);
-    uint32_t x = 540;
-    shape.setFillColor(sf::Color::Green);
+    cells.reserve(65536);
+    sf::Color cellColor = sf::Color::White;
+    uint32_t cellSize = 100;
+    int32_t xOffset = 0, yOffset = 0;
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) window.close();
+            if (event.type == sf::Event::MouseButtonPressed) {
+                uint64_t clickedCell = encode((event.mouseButton.x + xOffset) / cellSize, (event.mouseButton.y + yOffset) / cellSize);
+                if (cells.contains(clickedCell)) cells.erase(clickedCell);
+                else cells.insert(clickedCell);
+            }
         }
         window.clear();
-        shape.setPosition((float)x, 260.f);
-        window.draw(shape);
-        x += 7;
-        x %= 1280;
+        drawCells(window, cellColor, cellSize, xOffset, yOffset);
         window.display();
     }
     return 0;
