@@ -68,16 +68,18 @@ int main() {
     window.setFramerateLimit(60);
     cells.reserve(65536);
     sf::Color cellColor = sf::Color::White;
-    uint32_t cellSize = 100;
+    uint32_t cellSize = 10;
     int32_t xOffset = 0, yOffset = 0;
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) window.close();
-            if (event.type == sf::Event::MouseButtonPressed) {
+            else if (event.type == sf::Event::MouseButtonPressed) {
                 uint64_t clickedCell = encode((event.mouseButton.x + xOffset) / cellSize, (event.mouseButton.y + yOffset) / cellSize);
                 if (cells.contains(clickedCell)) cells.erase(clickedCell);
                 else cells.insert(clickedCell);
+            } else if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::F) next();
             }
         }
         window.clear();
