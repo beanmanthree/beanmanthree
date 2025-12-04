@@ -66,6 +66,7 @@ inline void drawCells(sf::RenderWindow& window, sf::Color& cellColor, uint32_t c
 int main() {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "beanmanthree");
     window.setFramerateLimit(60);
+    window.setKeyRepeatEnabled(false);
     cells.reserve(65536);
     sf::Color cellColor = sf::Color::White;
     uint32_t cellSize = 10;
